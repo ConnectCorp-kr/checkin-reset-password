@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/checkin-reset-password/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="비밀번호 재설정 앱">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="reset_password">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>비밀번호 재설정</title>
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    // GitHub Pages에서 URL 파라미터 처리를 위한 스크립트
+    window.onload = function() {
+      console.log("현재 URL: " + window.location.href);
+      
+      // URL에서 쿼리 파라미터 가져오기
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      // token, type, email 파라미터 확인
+      const token = urlParams.get('token');
+      const type = urlParams.get('type');
+      const email = urlParams.get('email');
+      
+      console.log("쿼리 파라미터 - Token: " + token);
+      console.log("쿼리 파라미터 - Type: " + type);
+      console.log("쿼리 파라미터 - Email: " + email);
+      
+      // 이미 해시가 있는지 확인
+      if (window.location.hash) {
+        console.log("이미 해시가 있습니다: " + window.location.hash);
+        // 해시가 이미 있으면 그대로 사용 (Flutter에서 처리)
+        return;
+      }
+      
+      // 에러 파라미터가 있는 경우 처리
+      const error = urlParams.get('error');
+      if (error) {
+        console.log("에러 파라미터 발견: " + error);
+        // 에러 정보는 유지 (Flutter에서 처리)
+        return;
+      }
+      
+      // 필요한 파라미터가 있으면 해시로 변환
+      if (token && type === 'recovery' && email) {
+        console.log("URL 파라미터를 해시로 변환합니다");
+        const hashParams = `#token=${token}&type=${type}&email=${email}`;
+        
+        // 새 URL로 리디렉션 (쿼리 파라미터 제거, 해시 추가)
+        // 쿼리 파라미터를 제거하고 해시만 추가
+        const baseUrl = window.location.origin + window.location.pathname;
+        console.log("리디렉션 URL: " + baseUrl + hashParams);
+        
+        // 즉시 리디렉션
+        window.location.replace(baseUrl + hashParams);
+      } else if (token || type || email) {
+        console.log("일부 파라미터만 존재합니다. 처리를 Flutter로 넘깁니다.");
+      } else {
+        console.log("URL 파라미터가 없습니다.");
+      }
+    };
+  </script>
+
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    const serviceWorkerVersion = "1898731979";
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
+</head>
+<body>
+  <script>
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
